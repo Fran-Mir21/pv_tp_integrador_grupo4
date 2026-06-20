@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "ajax"; // Nota: si usaban axios común, dejalos como "axios"
-import { Container, Table, Spinner, Alert } from "react-bootstrap";
+import axios from "axios";
+import { Container, Table, Spinner, Alert,Form } from "react-bootstrap";
 
 const ListaClientes = () => {
   // --- Estados del Módulo B (Tu parte) ---
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
 
   // --- Consumo GET de clientes ---
   useEffect(() => {
@@ -26,7 +27,15 @@ const ListaClientes = () => {
       setLoading(false);
     }
   };
+  const clientesFiltrados = clientes.filter((cliente) => {
+    const apellido = cliente.name?.lastname?.toLowerCase() || "";
+    const ciudad = cliente.address?.city?.toLowerCase() || "";
 
+    return (
+     apellido.includes(busqueda.toLowerCase()) ||
+     ciudad.includes(busqueda.toLowerCase())
+   );
+  });
   // --- Estados de Carga y Error ---
   if (loading) {
     return (
@@ -52,7 +61,13 @@ const ListaClientes = () => {
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Módulo B: Listado de Clientes</h2>
-
+      <Form.Control
+        type="text"
+        placeholder="Buscar por apellido o ciudad..."
+        className="mb-3"
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+      />
       <Table striped bordered hover responsive shadow-sm>
         <thead className="table-dark">
           <tr>
@@ -64,8 +79,8 @@ const ListaClientes = () => {
           </tr>
         </thead>
         <tbody>
-          {clientes.length > 0 ? (
-            clientes.map((cliente) => (
+          {clientesFiltrados.length > 0 ? (
+            clientesFiltrados.map((cliente) => (
               <tr key={cliente.id}>
                 <td>{cliente.id}</td>
                 <td className="text-capitalize">
