@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Table, Spinner, Alert,Form } from "react-bootstrap";
+import { Container, Table, Spinner, Alert, Form, Button } from "react-bootstrap";
+// 👇 LÍNEA NUEVA: Importar Link
+import { Link } from "react-router-dom";
 
 const ListaClientes = () => {
   // --- Estados del Módulo B (Tu parte) ---
@@ -27,15 +29,17 @@ const ListaClientes = () => {
       setLoading(false);
     }
   };
+
   const clientesFiltrados = clientes.filter((cliente) => {
     const apellido = cliente.name?.lastname?.toLowerCase() || "";
     const ciudad = cliente.address?.city?.toLowerCase() || "";
 
     return (
-     apellido.includes(busqueda.toLowerCase()) ||
-     ciudad.includes(busqueda.toLowerCase())
-   );
+      apellido.includes(busqueda.toLowerCase()) ||
+      ciudad.includes(busqueda.toLowerCase())
+    );
   });
+
   // --- Estados de Carga y Error ---
   if (loading) {
     return (
@@ -76,6 +80,8 @@ const ListaClientes = () => {
             <th>Email</th>
             <th>Teléfono</th>
             <th>Ciudad</th>
+            {/* 👇 LÍNEA NUEVA: Columna Acciones */}
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -89,11 +95,20 @@ const ListaClientes = () => {
                 <td>{cliente.email}</td>
                 <td>{cliente.phone}</td>
                 <td className="text-capitalize">{cliente.address?.city}</td>
+                {/* 👇 LÍNEA NUEVA: Botón Ver Ficha */}
+                <td>
+                  <Link to={`/clientes/${cliente.id}`}>
+                    <Button variant="outline-primary" size="sm">
+                      Ver Ficha
+                    </Button>
+                  </Link>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center text-muted py-3">
+              {/* 👇 MODIFICADO: colSpan ahora es 6 */}
+              <td colSpan="6" className="text-center text-muted py-3">
                 No hay clientes disponibles.
               </td>
             </tr>

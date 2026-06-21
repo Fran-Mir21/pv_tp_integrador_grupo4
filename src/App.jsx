@@ -2,8 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/layouts/Header";
 import RutaProtegida from "./components/common/RutaProtegida";
 import Login from "./views/Login";
-// 1. Importación obligatoria para que React reconozca el componente
-import ListaClientes from "./views/ListaClientes"; 
+import ListaClientes from "./views/ListaClientes";
+// 👇 LÍNEA NUEVA 1: Importar DetalleCliente
+import DetalleCliente from "./views/DetalleCliente";
 
 function App() {
   return (
@@ -17,19 +18,29 @@ function App() {
         {/* Ruta protegida para el Home / Dashboard */}
         <Route
           path="/"
-          element = {
+          element={
             <RutaProtegida>
               <h2>Panel principal</h2>
             </RutaProtegida>
           }
         />
 
-        {/* 2. Ruta protegida para tu Módulo de Clientes */}
+        {/* Ruta protegida para tu Módulo de Clientes */}
         <Route
           path="/clientes"
-          element = {
+          element={
             <RutaProtegida>
               <ListaClientes />
+            </RutaProtegida>
+          }
+        />
+
+        {/* 👇 LÍNEA NUEVA 2: Ruta para DetalleCliente */}
+        <Route
+          path="/clientes/:id"
+          element={
+            <RutaProtegida>
+              <DetalleCliente />
             </RutaProtegida>
           }
         />
