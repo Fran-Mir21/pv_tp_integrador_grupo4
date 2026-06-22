@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "ajax"; // Nota: si usaban axios común, dejalos como "axios"
-import { Container, Table, Spinner, Alert } from "react-bootstrap";
+import axios from "axios"; // 1. CORREGIDO: Importación correcta de axios
+import { Container, Table, Spinner, Alert, Form, Row, Col, Button } from "react-bootstrap";
+import { Link } from "react-router-dom"; // Necesario para navegar al detalle del cliente
 
 const ListaClientes = () => {
-  // --- Estados del Módulo B (Tu parte) ---
+  // --- Estados del Módulo B ---
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  
+  // Nuevo Estado para el Buscador
+  const [busqueda, setBusqueda] = useState("");
 
   // --- Consumo GET de clientes ---
   useEffect(() => {
@@ -26,6 +30,15 @@ const ListaClientes = () => {
       setLoading(false);
     }
   };
+
+  // --- Lógica del Buscador (Filtra por apellido o ciudad) ---
+  const clientesFiltrados = clientes.filter((cliente) => {
+    const apellido = cliente.name?.lastname?.toLowerCase() || "";
+    const ciudad = cliente.address?.city?.toLowerCase() || "";
+    const termino = busqueda.toLowerCase();
+
+    return apellido.includes(termino) || ciudad.includes(termino);
+  });
 
   // --- Estados de Carga y Error ---
   if (loading) {
@@ -48,12 +61,27 @@ const ListaClientes = () => {
     );
   }
 
-  // --- Tabla de Clientes ---
+  // --- Renderizado de la Vista ---
   return (
     <Container className="mt-4">
       <h2 className="mb-4">Módulo B: Listado de Clientes</h2>
 
-      <Table striped bordered hover responsive shadow-sm>
+      {/* 2. AGREGADO: Barra de Búsqueda */}
+      <Row className="mb-4">
+        <Col md={6}>
+          <Form.Group controlId="searchClient">
+            <Form.Control
+              type="text"
+              placeholder="🔍 Buscar por apellido o ciudad..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Tabla de Clientes */}
+      <Table striped bordered hover responsive className="shadow-sm">
         <thead className="table-dark">
           <tr>
             <th>ID</th>
@@ -61,11 +89,12 @@ const ListaClientes = () => {
             <th>Email</th>
             <th>Teléfono</th>
             <th>Ciudad</th>
+            <th>Acciones</th> {/* Columna nueva para el botón */}
           </tr>
         </thead>
         <tbody>
-          {clientes.length > 0 ? (
-            clientes.map((cliente) => (
+          {clientesFiltrados.length > 0 ? (
+            clientesFiltrados.map((cliente) => (
               <tr key={cliente.id}>
                 <td>{cliente.id}</td>
                 <td className="text-capitalize">
@@ -74,12 +103,20 @@ const ListaClientes = () => {
                 <td>{cliente.email}</td>
                 <td>{cliente.phone}</td>
                 <td className="text-capitalize">{cliente.address?.city}</td>
+                <td>
+                  {/* 3. AGREGADO: Botón para viajar a la ficha profunda */}
+                  <Link to={`/clientes/${cliente.id}`}>
+                    <Button variant="info" size="sm" className="text-white">
+                      Ver Ficha Completa
+                    </Button>
+                  </Link>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center text-muted py-3">
-                No hay clientes disponibles.
+              <td colSpan="6" className="text-center text-muted py-3">
+                No se encontraron clientes que coincidan con la búsqueda.
               </td>
             </tr>
           )}
