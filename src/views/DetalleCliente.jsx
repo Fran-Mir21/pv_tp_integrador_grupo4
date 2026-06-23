@@ -25,9 +25,22 @@ function DetalleCliente() {
       try {
         setLoading(true);
         setError(null);
+
+        // Primero, buscar en localStorage (clientes personalizados)
+        const clientesGuardados = localStorage.getItem("clientesPersonalizados");
+        const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
+        const clienteLocal = clientesLocales.find(c => c.id === parseInt(id));
+
+        if (clienteLocal) {
+          setCliente(clienteLocal);
+          setLoading(false);
+          return;
+        }
+
+        // Si no está en localStorage, buscar en la API
         const response = await fetch(`https://fakestoreapi.com/users/${id}`);
         if (!response.ok) {
-          throw new Error(`Error ${response.status}: No se pudo obtener el cliente`);
+          throw new Error(`Cliente no encontrado. ID: ${id}`);
         }
         const data = await response.json();
         setCliente(data);
