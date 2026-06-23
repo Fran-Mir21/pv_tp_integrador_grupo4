@@ -79,6 +79,27 @@ const ListaClientes = () => {
       // Hacer POST a la API
       const response = await axios.post("https://fakestoreapi.com/users", nuevoCliente);
       
+      // Agregar cliente nuevo al estado local (simular persistencia)
+      const clienteConId = {
+        id: response.data.id,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        name: {
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+        },
+        phone: formData.phone,
+        address: {
+          street: formData.street,
+          number: parseInt(formData.number) || 0,
+          city: formData.city,
+          zipcode: formData.zipcode,
+        },
+      };
+      
+      setClientes([...clientes, clienteConId]);
+      
       // Mostrar mensaje de éxito
       setAlertSuccess(`✅ Cliente agregado exitosamente. ID asignado: ${response.data.id}`);
       
@@ -101,9 +122,6 @@ const ListaClientes = () => {
 
       // Desaparecer alerta después de 5 segundos
       setTimeout(() => setAlertSuccess(""), 5000);
-
-      // Refrescar lista (opcional - API de prueba no persiste realmente)
-      obtenerClientes();
     } catch (err) {
       console.error("Error al crear cliente:", err);
       setAlertSuccess(`❌ Error al crear cliente: ${err.message}`);

@@ -56,17 +56,20 @@ function DetalleCliente() {
       }
 
       setAlertVariant('success');
-      setAlertMessage('Cliente eliminado correctamente (simulado)');
+      setAlertMessage('✅ Cliente eliminado correctamente (simulado). Regresando...');
       setShowAlert(true);
 
-      // Redirigir después de 2 segundos
-      setTimeout(() => navigate('/clientes'), 2000);
+      // Redirigir después de 1.5 segundos
+      const timer = setTimeout(() => {
+        navigate('/clientes', { replace: true });
+      }, 1500);
+      
+      return () => clearTimeout(timer);
     } catch (err) {
-      setAlertVariant('danger');
-      setAlertMessage(err.message);
-      setShowAlert(true);
-    } finally {
       setDeleting(false);
+      setAlertVariant('danger');
+      setAlertMessage(`❌ ${err.message}`);
+      setShowAlert(true);
     }
   };
 
