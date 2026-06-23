@@ -89,12 +89,12 @@ const ListaClientes = () => {
       // Hacer POST a la API
       await axios.post("https://fakestoreapi.com/users", nuevoCliente);
       
-      // Generar ID único para clientes personalizados (1000, 1001, etc.)
+      // Generar ID único para clientes personalizados (11, 12, 13... después del 10)
       const clientesGuardados = localStorage.getItem("clientesPersonalizados");
       const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
       const proximoId = clientesLocales.length > 0 
         ? Math.max(...clientesLocales.map(c => c.id)) + 1 
-        : 1000;
+        : 11;
       
       // Crear cliente con ID único
       const clienteConId = {
@@ -113,7 +113,7 @@ const ListaClientes = () => {
       // Mostrar mensaje de éxito
       setAlertSuccess(`✅ Cliente agregado exitosamente. ID: ${proximoId}`);
       
-      // Limpiar formulario
+      // Limpiar formulario y cerrar modal
       setFormData({
         firstname: "",
         lastname: "",
@@ -126,12 +126,8 @@ const ListaClientes = () => {
         username: "",
         password: "",
       });
-
-      // Cerrar modal DESPUÉS de actualizar el estado
-      setTimeout(() => {
-        setShowModal(false);
-        setEnviando(false);
-      }, 100);
+      setEnviando(false);
+      setShowModal(false);
 
       // Desaparecer alerta después de 5 segundos
       setTimeout(() => setAlertSuccess(""), 5000);
@@ -247,7 +243,16 @@ const ListaClientes = () => {
       </Table>
 
       {/* Modal de Formulario para Alta de Clientes (Módulo C) */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal 
+        show={showModal} 
+        onHide={() => {
+          setShowModal(false);
+          setEnviando(false);
+        }} 
+        size="lg"
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Agregar Nuevo Cliente</Modal.Title>
         </Modal.Header>
@@ -392,7 +397,14 @@ const ListaClientes = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button 
+            variant="secondary" 
+            onClick={() => {
+              setShowModal(false);
+              setEnviando(false);
+            }}
+            disabled={enviando}
+          >
             Cancelar
           </Button>
           <Button
@@ -400,14 +412,7 @@ const ListaClientes = () => {
             onClick={handleSubmitForm}
             disabled={enviando}
           >
-            {enviando ? (
-              <>
-                <Spinner as="span" animation="border" size="sm" className="me-2" />
-                Guardando...
-              </>
-            ) : (
-              "Guardar Cliente"
-            )}
+            {enviando ? "Guardando..." : "Guardar Cliente"}
           </Button>
         </Modal.Footer>
       </Modal>
