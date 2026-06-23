@@ -2,8 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/layouts/Header";
 import RutaProtegida from "./components/common/RutaProtegida";
 import Login from "./views/Login";
-import ListaClientes from "./views/ListaClientes"; 
-import DetalleCliente from "./views/DetalleCliente"; 
+import ListaClientes from "./views/ListaClientes";
+import DetalleCliente from "./views/DetalleCliente";
 
 function App() {
   return (

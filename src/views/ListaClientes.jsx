@@ -37,6 +37,7 @@ const ListaClientes = () => {
 
     return apellido.includes(termino) || ciudad.includes(termino);
   });
+
   // --- Estados de Carga y Error ---
   if (loading) {
     return (
@@ -86,7 +87,7 @@ const ListaClientes = () => {
             <th>Email</th>
             <th>Teléfono</th>
             <th>Ciudad</th>
-            <th>Acciones</th> {/* Columna nueva para el botón */}
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -101,7 +102,6 @@ const ListaClientes = () => {
                 <td>{cliente.phone}</td>
                 <td className="text-capitalize">{cliente.address?.city}</td>
                 <td>
-                  {/* 3. AGREGADO: Botón para viajar a la ficha profunda */}
                   <Link to={`/clientes/${cliente.id}`}>
                     <Button variant="info" size="sm" className="text-white">
                       Ver Ficha Completa
@@ -114,6 +114,7 @@ const ListaClientes = () => {
             <tr>
               <td colSpan="6" className="text-center text-muted py-3">
                 No se encontraron clientes que coincidan con la búsqueda.
+>>>>>>> origin/modulo-d-detalle-cliente
               </td>
             </tr>
           )}
