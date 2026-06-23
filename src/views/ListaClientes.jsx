@@ -114,7 +114,6 @@ const ListaClientes = () => {
             <tr>
               <td colSpan="6" className="text-center text-muted py-3">
                 No se encontraron clientes que coincidan con la búsqueda.
->>>>>>> origin/modulo-d-detalle-cliente
               </td>
             </tr>
           )}
