@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios"; // 1. CORREGIDO: Importación correcta de axios
+import axios from "axios";
 import { Container, Table, Spinner, Alert, Form, Row, Col, Button } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Necesario para navegar al detalle del cliente
+import { Link } from "react-router-dom";
 
 const ListaClientes = () => {
   // --- Estados del Módulo B ---
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
-  // Nuevo Estado para el Buscador
   const [busqueda, setBusqueda] = useState("");
 
   // --- Consumo GET de clientes ---
@@ -39,7 +37,6 @@ const ListaClientes = () => {
 
     return apellido.includes(termino) || ciudad.includes(termino);
   });
-
   // --- Estados de Carga y Error ---
   if (loading) {
     return (
@@ -66,7 +63,7 @@ const ListaClientes = () => {
     <Container className="mt-4">
       <h2 className="mb-4">Módulo B: Listado de Clientes</h2>
 
-      {/* 2. AGREGADO: Barra de Búsqueda */}
+      {/* Barra de Búsqueda */}
       <Row className="mb-4">
         <Col md={6}>
           <Form.Group controlId="searchClient">
