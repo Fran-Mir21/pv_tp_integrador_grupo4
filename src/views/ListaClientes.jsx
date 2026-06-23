@@ -36,8 +36,18 @@ const ListaClientes = () => {
     try {
       setLoading(true);
       setError(false);
+      
+      // Intentar cargar desde localStorage primero
+      const clientesGuardados = localStorage.getItem("clientesPersonalizados");
+      const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
+      
+      // Obtener de la API
       const respuesta = await axios.get("https://fakestoreapi.com/users");
-      setClientes(respuesta.data);
+      
+      // Combinar: clientes de la API + clientes personalizados (si hay)
+      const clientesCombinados = [...respuesta.data, ...clientesLocales];
+      
+      setClientes(clientesCombinados);
     } catch (err) {
       console.error("Error al traer los usuarios:", err);
       setError(true);
@@ -79,29 +89,23 @@ const ListaClientes = () => {
       // Hacer POST a la API
       const response = await axios.post("https://fakestoreapi.com/users", nuevoCliente);
       
-      // Agregar cliente nuevo al estado local (simular persistencia)
+      // Crear cliente con ID
       const clienteConId = {
-        id: response.data.id,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        name: {
-          firstname: formData.firstname,
-          lastname: formData.lastname,
-        },
-        phone: formData.phone,
-        address: {
-          street: formData.street,
-          number: parseInt(formData.number) || 0,
-          city: formData.city,
-          zipcode: formData.zipcode,
-        },
+        id: response.data.id || Math.random() * 1000,
+        ...nuevoCliente,
       };
       
+      // Guardar en localStorage
+      const clientesGuardados = localStorage.getItem("clientesPersonalizados");
+      const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
+      clientesLocales.push(clienteConId);
+      localStorage.setItem("clientesPersonalizados", JSON.stringify(clientesLocales));
+      
+      // Agregar al estado local
       setClientes([...clientes, clienteConId]);
       
       // Mostrar mensaje de éxito
-      setAlertSuccess(`✅ Cliente agregado exitosamente. ID asignado: ${response.data.id}`);
+      setAlertSuccess(`✅ Cliente agregado exitosamente. ID: ${clienteConId.id}`);
       
       // Limpiar formulario
       setFormData({

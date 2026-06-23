@@ -47,24 +47,35 @@ function DetalleCliente() {
 
     try {
       setDeleting(true);
-      const response = await fetch(`https://fakestoreapi.com/users/${id}`, {
-        method: 'DELETE',
-      });
       
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: No se pudo eliminar`);
+      // Verificar si es un cliente personalizado (guardado en localStorage)
+      const clientesGuardados = localStorage.getItem("clientesPersonalizados");
+      const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
+      const esClientePersonalizado = clientesLocales.some(c => c.id === parseInt(id));
+      
+      if (esClientePersonalizado) {
+        // Eliminar del localStorage
+        const clientesFiltrados = clientesLocales.filter(c => c.id !== parseInt(id));
+        localStorage.setItem("clientesPersonalizados", JSON.stringify(clientesFiltrados));
+      } else {
+        // Para clientes de la API, hacer DELETE (simula la acción)
+        const response = await fetch(`https://fakestoreapi.com/users/${id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: No se pudo eliminar`);
+        }
       }
 
       setAlertVariant('success');
-      setAlertMessage('✅ Cliente eliminado correctamente (simulado). Regresando...');
+      setAlertMessage('✅ Cliente eliminado correctamente. Regresando...');
       setShowAlert(true);
 
       // Redirigir después de 1.5 segundos
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         navigate('/clientes', { replace: true });
       }, 1500);
-      
-      return () => clearTimeout(timer);
     } catch (err) {
       setDeleting(false);
       setAlertVariant('danger');
