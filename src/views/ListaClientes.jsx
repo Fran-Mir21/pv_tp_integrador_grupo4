@@ -87,25 +87,31 @@ const ListaClientes = () => {
       };
 
       // Hacer POST a la API
-      const response = await axios.post("https://fakestoreapi.com/users", nuevoCliente);
+      await axios.post("https://fakestoreapi.com/users", nuevoCliente);
       
-      // Crear cliente con ID
+      // Generar ID único para clientes personalizados (1000, 1001, etc.)
+      const clientesGuardados = localStorage.getItem("clientesPersonalizados");
+      const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
+      const proximoId = clientesLocales.length > 0 
+        ? Math.max(...clientesLocales.map(c => c.id)) + 1 
+        : 1000;
+      
+      // Crear cliente con ID único
       const clienteConId = {
-        id: response.data.id || Math.random() * 1000,
+        id: proximoId,
         ...nuevoCliente,
       };
       
       // Guardar en localStorage
-      const clientesGuardados = localStorage.getItem("clientesPersonalizados");
-      const clientesLocales = clientesGuardados ? JSON.parse(clientesGuardados) : [];
       clientesLocales.push(clienteConId);
       localStorage.setItem("clientesPersonalizados", JSON.stringify(clientesLocales));
       
       // Agregar al estado local
-      setClientes([...clientes, clienteConId]);
+      const clientesActualizados = [...clientes, clienteConId];
+      setClientes(clientesActualizados);
       
       // Mostrar mensaje de éxito
-      setAlertSuccess(`✅ Cliente agregado exitosamente. ID: ${clienteConId.id}`);
+      setAlertSuccess(`✅ Cliente agregado exitosamente. ID: ${proximoId}`);
       
       // Limpiar formulario
       setFormData({
@@ -121,17 +127,19 @@ const ListaClientes = () => {
         password: "",
       });
 
-      // Cerrar modal
-      setShowModal(false);
+      // Cerrar modal DESPUÉS de actualizar el estado
+      setTimeout(() => {
+        setShowModal(false);
+        setEnviando(false);
+      }, 100);
 
       // Desaparecer alerta después de 5 segundos
       setTimeout(() => setAlertSuccess(""), 5000);
     } catch (err) {
       console.error("Error al crear cliente:", err);
       setAlertSuccess(`❌ Error al crear cliente: ${err.message}`);
-      setTimeout(() => setAlertSuccess(""), 5000);
-    } finally {
       setEnviando(false);
+      setTimeout(() => setAlertSuccess(""), 5000);
     }
   };
 
