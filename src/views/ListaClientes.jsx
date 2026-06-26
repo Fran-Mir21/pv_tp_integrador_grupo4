@@ -87,7 +87,7 @@ const ListaClientes = () => {
       };
 
       // Hacer POST a la API
-      await axios.post("https://fakestoreapi.com/users", nuevoCliente);
+      const response = await axios.post("https://fakestoreapi.com/users", nuevoCliente);
       
       // Generar ID único para clientes personalizados (11, 12, 13... después del 10)
       const clientesGuardados = localStorage.getItem("clientesPersonalizados");
@@ -110,8 +110,9 @@ const ListaClientes = () => {
       const clientesActualizados = [...clientes, clienteConId];
       setClientes(clientesActualizados);
       
-      // Mostrar mensaje de éxito
-      setAlertSuccess(`✅ Cliente agregado exitosamente. ID: ${proximoId}`);
+      // Mostrar mensaje de éxito con el ID asignado por la API
+      const apiId = response?.data?.id;
+      setAlertSuccess(`✅ Cliente agregado exitosamente. ID asignado por la API: ${apiId ?? "N/A"}`);
       
       // Limpiar formulario y cerrar modal
       setFormData({
@@ -172,7 +173,7 @@ const ListaClientes = () => {
   // --- Renderizado de la Vista ---
   return (
     <Container className="mt-4">
-      <h2 className="mb-4">Módulo B: Listado de Clientes</h2>
+      <h2 className="h4 fw-semibold text-dark mb-3">Listado de Clientes</h2>
 
       {/* Alert de éxito/error temporal (Módulo C) */}
       {alertSuccess && (
