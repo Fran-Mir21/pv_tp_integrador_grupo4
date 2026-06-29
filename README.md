@@ -6,5 +6,5 @@ Aplicacion web desarrollada con React + Vite para gestionar clientes de una empr
 ## Integrantes del grupo
 - Miranda Francisco - GitHub:@Fran-Mir21
 - Eugenia Arias - GitHub: @eugearias30
-- Naty Valdiviezo - GitHub: @natyvaldiviezo20
+- Natalia Valdiviezo - GitHub: @natyvaldiviezo20
 - Nicolas Bravo - GitHub: @llNEBll
