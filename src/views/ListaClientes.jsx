@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Table, Spinner, Alert, Form, Row, Col, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Buscador from "../components/common/Buscador";
 
 const ListaClientes = () => {
   // --- Estados del Módulo B ---
@@ -185,14 +186,12 @@ const ListaClientes = () => {
       {/* Barra de Búsqueda y Botón Agregar */}
       <Row className="mb-4">
         <Col md={6}>
-          <Form.Group controlId="searchClient">
-            <Form.Control
-              type="text"
-              placeholder="🔍 Buscar por apellido o ciudad..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </Form.Group>
+          <Buscador
+            controlId="searchClient"
+            placeholder="🔍 Buscar por apellido o ciudad..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
         </Col>
         <Col md={6} className="text-end">
           <Button variant="success" onClick={() => setShowModal(true)}>
